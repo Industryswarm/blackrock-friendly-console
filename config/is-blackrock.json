@@ -1,0 +1,132 @@
+{
+
+
+  "core": {
+    "banner": "Blackrock Application Server",
+    "maxObjectListeners": 100,
+    "modules": ["cli", "core", "daemon", ".errorhandler", "farm", ".generator", "i18n", ".identity", 
+                ".installer", "jobs", "logger", "router", ".sandbox", "services", "swagger", ".universe", "utilities"],
+    "interfaces": [".axon", "http", ".nanomsg", ".ssh", "websockets", ".zeromq"],
+    "startupModules": ["logger", "utilities", "daemon", "cli"],
+    "timeouts": {
+      "loadDependencies": 5000,
+      "closeModules": 5000
+    }
+  },
+
+
+  "errorhandler": {
+    "enabled": true,
+    "timeout": 5000
+  },
+
+
+  "farm": {
+    "server": {
+      "port": 8001,
+      "cache": "scuttlebutt.dat"
+    },
+    "seeds": ["127.0.0.1:8001"]
+  },
+
+
+  "interfaces": {
+    "http": {
+      "http": {
+        "enabled": true,
+        "ssl": false,
+        "port": 3020,
+        "requestTimeout": 10000,
+        "log": false,
+        "fileUploadPath": "./tmp/",
+        "maxUploadFileSizeMb": 50
+      }
+    },
+    "websockets": {
+      "websockets": {
+        "enabled": true,
+        "httpInterface": "http"
+      }
+    }
+  },
+
+
+  "logger": {
+    "enabled": true,
+    "levels": ["startup", "shutdown", "warning", "error", "fatal", "debug"],
+    "logMetadataObjects": false,
+    "sinks": {
+      "console": {
+        "enabled": true
+      },
+      "file": {
+        "enabled": false,
+        "location": "log.txt"
+      },
+      "elasticsearch": {
+        "enabled": false,
+        "base_uri": "https://elasticsearch.industryswarm.com",
+        "base_index": "is-blackrock.local-darren"
+      }
+    },
+    "heartbeat": {
+      "console": false,
+      "heartbeatFreq": 10000,
+      "cacheFreq": 10000
+    }
+  },
+
+
+  "router": {
+    "instances": {
+      "RouterOne": {
+        "interfaces": ["*"],
+        "services": ["*"]
+      }
+    }
+  },
+
+
+  "services": {
+    "allow": {
+      "cfg": true,
+      "pkg": true,
+      "fetchBasePath": true,
+      "getCurrentService": true,
+      "shutdown": false,
+      "globals": true,
+      "modules": {
+        "http": ["client.request", "client.get", "client.post", "client.put", "client.delete",
+                 "get", "addHook", "removeHook"],
+        "i18n": ["init", "t"],
+        "identity": [], 
+        "jobs": ["add", "remove", "jobs.add", "jobs.remove"], 
+        "logger": ["log"],
+        "services": ["service(serviceName)", "serviceStats"],
+        "universe": [], 
+        "utilities": ["randomString", "uuid4", "isJSON", "objectLength", "getCurrentDateInISO", "validateString",
+                      "cloneObject", "modules.loadModule", "csv.parse", "crypto.encrypt", "crypto.decrypt",
+                      "xml", "system.getMemoryUse", "system.getCpuLoad", "system.getStartTime", "system.getEndTime",
+                      "system.getObjectMemoryUsage", "isUndefined", "isNull", "isNil", "path", "prop", "assign"]
+      }
+    },
+    "runtime": {
+      "services": {
+        "allowLoad": true,
+        "allowUnload": true,
+        "allowOverride": false
+      },
+      "controllers": {
+        "allowLoad": true,
+        "allowUnload": true,
+        "allowOverride": false
+      }
+    },
+    "sandbox": {
+      "default": false,
+      "allowOverride": true
+    }
+  }
+
+
+}
